@@ -15,6 +15,7 @@
  */
 
 #include QMK_KEYBOARD_H
+#include "muse.h"
 
 enum preonic_layers {
   _QWERTY,
@@ -26,9 +27,6 @@ enum preonic_layers {
   _BWPO_FOR_AZERTY,
   _BFA_SFT,
   _BFA_SYMB,
-  _BWPO_FOR_BEPO,
-  _BFB_SFT,
-  _BFB_SYMB,
   _BWPO_FOR_CUSTOM,
   _BFC_SYMB,
   _LOWER,
@@ -37,15 +35,15 @@ enum preonic_layers {
 };
 
 enum preonic_keycodes {
-  QWERTY = SAFE_RANGE,
-  QWERTY_S,
-  BWPO_FQ,
-  BWPO_FA,
-  BWPO_FB,
-  BWPO_FC,
-  LOWER,
+  LOWER = SAFE_RANGE,
   RAISE
 };
+
+#define QWERTY TO(_QWERTY)
+#define QWERTY_S TO(_QWERTY_SYMBOLS)
+#define BWPO_FQ TO(_BWPO_FOR_QWERTY)
+#define BWPO_FA TO(_BWPO_FOR_AZERTY)
+#define BWPO_FC TO(_BWPO_FOR_CUSTOM)
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
@@ -59,7 +57,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |------+------+------+------+------+------|------+------+------+------+------+------|
  * |Shift |   Z  |   X  |   C  |   V  |   B  |   N  |   M  |   ,  |   .  |   /  |Shift |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * | Ctrl | GUI  | LAlt | RAlt |Lower |Enter |Space |Raise | RAlt | LAlt | GUI  | Ctrl |
+ * | Ctrl | GUI  | LAlt | RAlt |Lower |Space |Enter |Raise | RAlt | LAlt | GUI  | Ctrl |
  * `-----------------------------------------------------------------------------------'
  */
 [_QWERTY] = LAYOUT_preonic_grid( \
@@ -67,7 +65,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   KC_TAB,  KC_Q,    KC_W,    KC_E,    KC_R,  KC_T,   KC_Y,   KC_U,  KC_I,    KC_O,    KC_P,    KC_CAPS, \
   KC_BSPC, KC_A,    KC_S,    KC_D,    KC_F,  KC_G,   KC_H,   KC_J,  KC_K,    KC_L,    KC_SCLN, KC_DEL,  \
   KC_LSFT, KC_Z,    KC_X,    KC_C,    KC_V,  KC_B,   KC_N,   KC_M,  KC_COMM, KC_DOT,  KC_SLSH, KC_RSFT, \
-  KC_LCTL, KC_LGUI, KC_LALT, KC_RALT, LOWER, KC_ENT, KC_SPC, RAISE, KC_RALT, KC_LALT, KC_RGUI, KC_RCTL  \
+  KC_LCTL, KC_LGUI, KC_LALT, KC_RALT, LOWER, KC_SPC, KC_ENT, RAISE, KC_RALT, KC_LALT, KC_RGUI, KC_RCTL  \
 ),
 
 /* qwerty with symbols layer
@@ -122,7 +120,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |------+------+------+------+------+------|------+------+------+------+------+------|
  * |Shift |   "  |   Y  |   X  |   .  |   K  |   '  |   Q  |   G  |   H  |   F  |Shift |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * | Ctrl | GUI  | LAlt |Symbol|Lower |Enter |Space |Raise |Symbol| RAlt | GUI  | Ctrl |
+ * | Ctrl | GUI  | LAlt |Symbol|Lower |Space |Enter |Raise |Symbol| RAlt | GUI  | Ctrl |
  * `-----------------------------------------------------------------------------------'
  */
 [_BWPO_FOR_QWERTY] = LAYOUT_preonic_grid( \
@@ -185,7 +183,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |------+------+------+------+------+------|------+------+------+------+------+------|
  * |Shift |   "  |   Y  |   X  |   .  |   K  |   '  |   Q  |   G  |   H  |   F  |Shift |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * | Ctrl | GUI  | LAlt |Symbol|Lower |Enter |Space |Raise |Symbol| RAlt | GUI  | Ctrl |
+ * | Ctrl | GUI  | LAlt |Symbol|Lower |Space |Enter |Raise |Symbol| RAlt | GUI  | Ctrl |
  * `-----------------------------------------------------------------------------------'
  */
 [_BWPO_FOR_AZERTY] = LAYOUT_preonic_grid( \
@@ -238,69 +236,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   _______, _______,    _______,    _______,      _______,    _______,       _______,    _______,   _______,    _______,    _______, _______  \
 ),
 
-/* bwpo for bepo
- * ,-----------------------------------------------------------------------------------.
- * | Esc  |   1  |   2  |   3  |   4  |   5  |   6  |   7  |   8  |   9  |   0  | F13  |
- * |------+------+------+------+------+------+------+------+------+------+------+------|
- * | Tab  |   B  |   W  |   P  |   O  |   Z  |   M  |   V  |   D  |   L  |   J  | Caps |
- * |------+------+------+------+------+-------------+------+------+------+------+------|
- * | Bksp |   A  |   U  |   I  |   E  |   ,  |   C  |   T  |   S  |   R  |   N  |Delete|
- * |------+------+------+------+------+------|------+------+------+------+------+------|
- * |Shift |   "  |   Y  |   X  |   .  |   K  |   '  |   Q  |   G  |   H  |   F  |Shift |
- * |------+------+------+------+------+------+------+------+------+------+------+------|
- * | Ctrl | GUI  | LAlt |Symbol|Lower |Enter |Space |Raise |Symbol| RAlt | GUI  | Ctrl |
- * `-----------------------------------------------------------------------------------'
- */
-[_BWPO_FOR_BEPO] = LAYOUT_preonic_grid( \
-  KC_ESC,                 S(KC_1), S(KC_2), S(KC_3),       S(KC_4),    S(KC_5), S(KC_6),    S(KC_7), S(KC_8),       S(KC_9), S(KC_0), KC_F13,                 \
-  _______,                KC_Q,    KC_RBRC, KC_E,          KC_R,       KC_LBRC, KC_QUOT,    KC_U,    KC_I,          KC_O,    KC_P,    _______,                \
-  _______,                KC_A,    KC_S,    KC_D,          KC_F,       KC_G,    KC_H,       KC_J,    KC_K,          KC_L,    KC_SCLN, _______,                \
-  LM(_BFB_SFT, MOD_LSFT), KC_1,    KC_X,    KC_C,          KC_V,       KC_B,    ALGR(KC_G), KC_M,    KC_COMM,       KC_DOT,  KC_SLSH, LM(_BFB_SFT, MOD_LSFT), \
-  _______,                _______, _______, MO(_BFB_SYMB), _______,    _______, _______,    _______, MO(_BFB_SYMB), KC_RALT, _______, _______                 \
-),
-
-/* bwpo for bepo shifted
- * ,-----------------------------------------------------------------------------------.
- * |      |      |      |      |      |      |      |      |      |      |      |      |
- * |------+------+------+------+------+------+------+------+------+------+------+------|
- * |      |      |      |      |      |      |      |      |      |      |      |      |
- * |------+------+------+------+------+-------------+------+------+------+------+------|
- * |      |      |      |      |      |   ;  |      |      |      |      |      |      |
- * |------+------+------+------+------+------|------+------+------+------+------+------|
- * |      |   !  |      |      |   :  |      |   ?  |      |      |      |      |      |
- * |------+------+------+------+------+------+------+------+------+------+------+------|
- * |      |      |      |      |      |      |      |      |      |      |      |      |
- * `-----------------------------------------------------------------------------------'
- */
-[_BFB_SFT] = LAYOUT_preonic_grid( \
-  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, \
-  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, \
-  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, \
-  _______, S(KC_Y), _______, _______, _______, _______, S(KC_N), _______, _______, _______, _______, _______, \
-  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______  \
-),
-
-/* bwpo for bepo symbols
- * ,-----------------------------------------------------------------------------------.
- * |      |      |      |      |      |      |      |      |      |      |      |      |
- * |------+------+------+------+------+------+------+------+------+------+------+------|
- * |      |   |  |   É  |   &  |   [  |   ]  |      |   =  |   #  |   $  |   ^  |      |
- * |------+------+------+------+------+-------------+------+------+------+------+------|
- * |      |   À  |   <  |   >  |   (  |   )  |   @  |   +  |   -  |   /  |   *  |      |
- * |------+------+------+------+------+------|------+------+------+------+------+------|
- * |      |   \  |   {  |   }  |   È  |   ~  |      |   _  |   `  |   %  |   Ç  |      |
- * |------+------+------+------+------+------+------+------+------+------+------+------|
- * |      |      |      |      |      |      |      |      |      |      |      |      |
- * `-----------------------------------------------------------------------------------'
- */
-[_BFB_SYMB] = LAYOUT_preonic_grid( \
-  _______, _______,    _______,    _______,    _______,    _______,    _______,    _______,       _______,   _______, _______,    _______, \
-  _______, ALGR(KC_Q), KC_W,       ALGR(KC_E), ALGR(KC_4), ALGR(KC_5), _______,    KC_MINS,       S(KC_GRV), KC_GRV,  ALGR(KC_6), _______, \
-  _______, KC_Z,       ALGR(KC_2), ALGR(KC_3), KC_4,       KC_5,       KC_6,       KC_7,          KC_8,      KC_9,    KC_0,       _______, \
-  _______, ALGR(KC_Z), ALGR(KC_X), ALGR(KC_C), KC_T,       ALGR(KC_B), _______,    ALGR(S(KC_Q)), S(KC_EQL), KC_EQL,  KC_NUHS,    _______, \
-  _______, _______,    _______,    _______,    _______,    _______,    _______,    _______,       _______,   _______, _______,    _______  \
-),
-
 /* bwpo for custom
  * ,-----------------------------------------------------------------------------------.
  * | Esc  |   1  |   2  |   3  |   4  |   5  |   6  |   7  |   8  |   9  |   0  | F13  |
@@ -311,11 +246,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |------+------+------+------+------+------|------+------+------+------+------+------|
  * |Shift |   Z  |   X  |   C  |   V  |   B  |   N  |   M  |   ,  |   .  |   /  |Shift |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * | Ctrl | GUI  | LAlt |Symbol|Lower |Enter |Space |Raise |Symbol| RAlt | GUI  | Ctrl |
+ * | Ctrl | GUI  | LAlt |Symbol|Lower |Space |Enter |Raise |Symbol| RAlt | GUI  | Ctrl |
  * `-----------------------------------------------------------------------------------'
  */
 [_BWPO_FOR_CUSTOM] = LAYOUT_preonic_grid( \
-  KC_ESC,  _______, _______, _______,       _______, _______, _______, _______, _______,       _______, _______, KC_F13,  \
+  _______,  _______, _______, _______,      _______, _______, _______, _______, _______,       _______, _______, KC_F13,  \
   _______, _______, _______, _______,       _______, _______, _______, _______, _______,       _______, _______, _______, \
   _______, _______, _______, _______,       _______, _______, _______, _______, _______,       _______, _______, _______, \
   _______, _______, _______, _______,       _______, _______, _______, _______, _______,       _______, _______, _______, \
@@ -368,30 +303,30 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * ,-----------------------------------------------------------------------------------.
  * | Esc  |      |      |      |      |      |      |      |      |      |      | F13  |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * | Tab  |      |      |      |      |      |  *   |   7  |   8  |   9  |  -   | Caps |
+ * | Tab  |      |      |      |      |      |   *  |   7  |   8  |   9  |  -   | Caps |
  * |------+------+------+------+------+-------------+------+------+------+------+------|
- * | Bksp |      |      |      |      |      |  /   |   4  |   5  |   6  |  +   |Delete|
+ * | Bksp |      |      |      |      |      |   /  |   4  |   5  |   6  |  +   |Delete|
  * |------+------+------+------+------+------|------+------+------+------+------+------|
- * |Shift |      |      |      |      |      |   0  |   1  |   2  |   3  |Enter |Shift |
+ * |Shift |      |      |      |      |   ~  |   0  |   1  |   2  |   3  |Enter |Shift |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * | Ctrl | GUI  | Alt  |AltGr |Lower |Enter |Space |Raise |AltGr | Alt  | GUI  | Ctrl |
+ * | Ctrl | GUI  | Alt  |AltGr |Lower |Space |Enter |Raise |AltGr | Alt  | GUI  | Ctrl |
  * `-----------------------------------------------------------------------------------'
  */
 [_RAISE] = LAYOUT_preonic_grid( \
-  _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_F13,  \
-  _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_PAST, KC_KP_7, KC_KP_8, KC_KP_9, KC_PMNS, _______, \
-  _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_PSLS, KC_KP_4, KC_KP_5, KC_KP_6, KC_PPLS, _______, \
-  _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_KP_0, KC_KP_1, KC_KP_2, KC_KP_3, KC_PENT, _______, \
-  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______  \
+  _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_F13,  \
+  _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,  KC_PAST, KC_KP_7, KC_KP_8, KC_KP_9, KC_PMNS, _______, \
+  _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,  KC_PSLS, KC_KP_4, KC_KP_5, KC_KP_6, KC_PPLS, _______, \
+  _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_GRAVE, KC_KP_0, KC_KP_1, KC_KP_2, KC_KP_3, KC_PENT, _______, \
+  _______, _______, _______, _______, _______, _______,  _______, _______, _______, _______, _______, _______  \
 ),
 
 /* Adjust (Lower + Raise)
  * ,-----------------------------------------------------------------------------------.
  * |  F1  |  F2  |  F3  |  F4  |  F5  |  F6  |  F7  |  F8  |  F9  |  F10 |  F11 |  F12 |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * |      | Reset|Debug |      |      |      |      |TermOn|TermOf|      |      |  Del |
+ * |      | Reset| Debug|      |      |      |      |      |      |      |      |  Del |
  * |------+------+------+------+------+-------------+------+------+------+------+------|
- * |      |      |      |Aud on|AudOff|AGnorm|AGswap|      |      |      |      |      |
+ * |      |      |Aud cy|Aud on|AudOff|AGnorm|AGswap|      |      |      |      |      |
  * |------+------+------+------+------+------|------+------+------+------+------+------|
  * |      |Voice-|Voice+|Mus on|MusOff|MidiOn|MidOff|      |      |      |      |      |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
@@ -399,67 +334,16 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * `-----------------------------------------------------------------------------------'
  */
 [_ADJUST] = LAYOUT_preonic_grid( \
-  KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,    KC_F9,    KC_F10,  KC_F11,  KC_F12,  \
-  XXXXXXX, RESET,   DEBUG,   XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, TERM_ON,  TERM_OFF, XXXXXXX, XXXXXXX, KC_DEL,  \
-  XXXXXXX, XXXXXXX, MU_MOD,  AU_ON,   AU_OFF,  AG_NORM, AG_SWAP, QWERTY,   BWPO_FQ,  BWPO_FB, XXXXXXX, XXXXXXX, \
-  XXXXXXX, MUV_DE,  MUV_IN,  MU_ON,   MU_OFF,  MI_ON,   MI_OFF,  QWERTY_S, BWPO_FA,  BWPO_FC, XXXXXXX, XXXXXXX, \
-  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,  XXXXXXX,  XXXXXXX, XXXXXXX, XXXXXXX  \
+  KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,     KC_F9,    KC_F10,  KC_F11,  KC_F12,  \
+  XXXXXXX, QK_BOOT, DB_TOGG,  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,  XXXXXXX,  XXXXXXX, XXXXXXX, KC_DEL,  \
+  XXXXXXX, XXXXXXX, MU_NEXT,  AU_ON,   AU_OFF,  AG_NORM, AG_SWAP, QWERTY,   BWPO_FQ,  BWPO_FC, XXXXXXX, XXXXXXX, \
+  XXXXXXX, AU_PREV, AU_NEXT,  MU_ON,   MU_OFF,  MI_ON,   MI_OFF,  QWERTY_S, BWPO_FA,  XXXXXXX, XXXXXXX, XXXXXXX, \
+  XXXXXXX, XXXXXXX, XXXXXXX,  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,  XXXXXXX,  XXXXXXX, XXXXXXX, XXXXXXX  \
 )
 };
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   switch (keycode) {
-        case QWERTY:
-          if (record->event.pressed) {
-            layer_off(_BWPO_FOR_QWERTY);
-            layer_off(_BWPO_FOR_AZERTY);
-            layer_off(_BWPO_FOR_BEPO);
-            layer_off(_BWPO_FOR_CUSTOM);
-          }
-          return false;
-          break;
-        case QWERTY_S:
-          if (record->event.pressed) {
-            layer_invert(_QWERTY_SYMBOLS);
-          }
-          return false;
-          break;
-        case BWPO_FQ:
-          if (record->event.pressed) {
-            layer_on(_BWPO_FOR_QWERTY);
-            layer_off(_BWPO_FOR_AZERTY);
-            layer_off(_BWPO_FOR_BEPO);
-            layer_off(_BWPO_FOR_CUSTOM);
-          }
-          return false;
-          break;
-        case BWPO_FA:
-          if (record->event.pressed) {
-            layer_off(_BWPO_FOR_QWERTY);
-            layer_on(_BWPO_FOR_AZERTY);
-            layer_off(_BWPO_FOR_BEPO);
-            layer_off(_BWPO_FOR_CUSTOM);
-          }
-          return false;
-          break;
-        case BWPO_FB:
-          if (record->event.pressed) {
-            layer_off(_BWPO_FOR_QWERTY);
-            layer_off(_BWPO_FOR_AZERTY);
-            layer_on(_BWPO_FOR_BEPO);
-            layer_off(_BWPO_FOR_CUSTOM);
-          }
-          return false;
-          break;
-        case BWPO_FC:
-          if (record->event.pressed) {
-            layer_off(_BWPO_FOR_QWERTY);
-            layer_off(_BWPO_FOR_AZERTY);
-            layer_off(_BWPO_FOR_BEPO);
-            layer_on(_BWPO_FOR_CUSTOM);
-          }
-          return false;
-          break;
         case LOWER:
           if (record->event.pressed) {
             layer_on(_LOWER);
@@ -483,3 +367,87 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       }
     return true;
 };
+
+bool muse_mode = false;
+uint8_t last_muse_note = 0;
+uint16_t muse_counter = 0;
+uint8_t muse_offset = 70;
+uint16_t muse_tempo = 50;
+
+bool encoder_update_user(uint8_t index, bool clockwise) {
+  if (muse_mode) {
+    if (IS_LAYER_ON(_RAISE)) {
+      if (clockwise) {
+        muse_offset++;
+      } else {
+        muse_offset--;
+      }
+    } else {
+      if (clockwise) {
+        muse_tempo+=1;
+      } else {
+        muse_tempo-=1;
+      }
+    }
+  } else {
+    if (clockwise) {
+      register_code(KC_PGDN);
+      unregister_code(KC_PGDN);
+    } else {
+      register_code(KC_PGUP);
+      unregister_code(KC_PGUP);
+    }
+  }
+    return true;
+}
+
+bool dip_switch_update_user(uint8_t index, bool active) {
+    switch (index) {
+        case 0:
+            if (active) {
+                layer_on(_ADJUST);
+            } else {
+                layer_off(_ADJUST);
+            }
+            break;
+        case 1:
+            if (active) {
+                muse_mode = true;
+            } else {
+                muse_mode = false;
+            }
+    }
+    return true;
+}
+
+
+void matrix_scan_user(void) {
+#ifdef AUDIO_ENABLE
+    if (muse_mode) {
+        if (muse_counter == 0) {
+            uint8_t muse_note = muse_offset + SCALE[muse_clock_pulse()];
+            if (muse_note != last_muse_note) {
+                stop_note(compute_freq_for_midi_note(last_muse_note));
+                play_note(compute_freq_for_midi_note(muse_note), 0xF);
+                last_muse_note = muse_note;
+            }
+        }
+        muse_counter = (muse_counter + 1) % muse_tempo;
+    } else {
+        if (muse_counter) {
+            stop_all_notes();
+            muse_counter = 0;
+        }
+    }
+#endif
+}
+
+bool music_mask_user(uint16_t keycode) {
+  switch (keycode) {
+    case RAISE:
+    case LOWER:
+      return false;
+    default:
+      return true;
+  }
+}
